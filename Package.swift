@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "vapor-lambda-adapter",
     products: [
-        .library(name: "VaporLambdaAdapter", targets: ["Adapter"])
+        .library(name: "vapor-lambda-adapter", targets: ["VaporLambdaAdapter"])
     ],
     dependencies: [
         .package(url: "https://github.com/kperson/swift-aws-lambda-adapter.git", .branch("master")),
@@ -12,7 +12,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Adapter", 
+            name: "VaporLambdaAdapter", 
             dependencies: ["Vapor", "AWSLambdaAdapter"],
             path: "./Sources"
         )
