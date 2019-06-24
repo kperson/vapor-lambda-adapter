@@ -13,8 +13,8 @@ public class VaporLambdaHTTP {
     public class func configure() {
         if
             CommandLine.arguments[0] == "/opt/swift-shared-libs/ld-linux-x86-64.so.2"
-                && CommandLine.arguments[1] == "--library-path"
-                && CommandLine.arguments[2] == "/opt/swift-shared-libs/lib"
+            && CommandLine.arguments[1] == "--library-path"
+            && CommandLine.arguments[2] == "/opt/swift-shared-libs/lib"
         {
             CommandLine.arguments.remove(at: 0)
             CommandLine.arguments.remove(at: 0)
@@ -46,7 +46,6 @@ public extension Application {
     }
     
 }
-
 
 
 struct LambdaHTTPRequest {
@@ -187,7 +186,7 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
                         statusCode: 404,
                         body: "request not found",
                         headers: ["Content-Type": "text/plain"]
-                        ).dictionary
+                    ).dictionary
                 )
             }
         }
@@ -197,12 +196,15 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
                 print(error, to: &s)
                 logger.error(s)
             }
+            else {
+                print(error)
+            }
             return container.eventLoop.newSucceededFuture(result:
                 LambdaHTTPResponse(
                     statusCode: 500,
                     body: "an unkown error has occurred",
                     headers: ["Content-Type": "text/plain"]
-                    ).dictionary
+                ).dictionary
             )
         }
     }
