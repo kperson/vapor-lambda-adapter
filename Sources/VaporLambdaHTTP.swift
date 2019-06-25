@@ -89,6 +89,8 @@ struct LambdaHTTPRequest {
         c.queryItems = queryStringParameters.map { k, v in
             URLQueryItem(name: k, value: v)
         }
+
+        print(c)
         
         let method: HTTPMethod
         switch httpMethod.lowercased() {

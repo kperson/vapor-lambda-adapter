@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/opt/swift-shared-libs/run.sh
