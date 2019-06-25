@@ -3,7 +3,6 @@
 import Vapor
 import VaporLambdaAdapter
 
-
 VaporLambdaHTTP.configure()
 
 let app = try Application(runAsLambda: true)

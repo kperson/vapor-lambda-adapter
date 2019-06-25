@@ -29,9 +29,13 @@ data "archive_file" "zip" {
 }
 
 resource "null_resource" "cleanup" {
+  triggers = {
+    time = "${timestamp()}"
+  }
+  
   depends_on = ["data.archive_file.zip"]
   provisioner "local-exec" {
-    command = "rm -rf ${random_string.tag.result}"
+    command = "rm -rf ${random_string.tag.result} && rm ${executable_file}"
   }
 }
 
