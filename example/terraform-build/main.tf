@@ -1,6 +1,7 @@
 locals {
   app_envs = {
     EXECUTABLE = "VaporApp"
+    MODE       = "lambda"
   }
   layers = [
     "${var.swift_lambda_layer}"
