@@ -179,6 +179,10 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
     public func handle(data: [String : Any], eventLoopGroup: EventLoopGroup) -> EventLoopFuture<[String : Any]> {
         do {
             if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data) {
+                print(httpRequest)
+                if let logger = try? container.make(Logger.self) {
+                    logger.info(httpRequest)
+                }
                 let request = Request(http: httpRequest.vaporRequest, using: container)
                 return try r.respond(to: request).map { $0.lambdaResponse.dictionary }
             }
