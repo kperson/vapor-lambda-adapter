@@ -81,8 +81,12 @@ struct LambdaHTTPRequest {
         c.host = "localhost"
         c.path = path
         c.scheme = "http"
-        c.queryItems = queryStringParameters.map { k, v in
-            URLQueryItem(name: k, value: v)
+        c.port = 8080
+        
+        if !queryStringParameters.isEmpty {
+            c.queryItems = queryStringParameters.map { k, v in
+                URLQueryItem(name: k, value: v)
+            }
         }
         
         let method: HTTPMethod
@@ -106,7 +110,12 @@ struct LambdaHTTPRequest {
         let headerPairs = headers.map { $0 }
         return HTTPRequest(
             method: method,
-            url: c.url!,
+            url: c.url!.absoluteString.replacingOccurrences(
+                of: "http://localhost:8080",
+                with: "",
+                options: [],
+                range: nil
+            ),
             version: .init(major: 1, minor: 1),
             headers: HTTPHeaders(headerPairs),
             body: body ?? "".data(using: .utf8)!
