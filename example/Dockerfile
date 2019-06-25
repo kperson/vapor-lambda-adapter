@@ -5,4 +5,4 @@ WORKDIR /code
 
 RUN apt-get -y update 
 RUN apt-get install -y zlib1g-dev libssl-dev
-RUN swift build -c release
+RUN swift build --build-path ./.lambda-build -c release

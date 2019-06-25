@@ -15,7 +15,7 @@ module "docker_build" {
 
 module "extract_executable" {
   source         = "./modules/docker-extract"
-  container_file = "/code/.build/x86_64-unknown-linux/release/VaporApp"
+  container_file = "/code/.lambda-build/x86_64-unknown-linux/release/VaporApp"
   output_file    = "VaporApp"
   tag            = "${module.docker_build.docker_tag}"
 }

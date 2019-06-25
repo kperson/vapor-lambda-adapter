@@ -65,15 +65,10 @@ struct LambdaHTTPRequest {
             self.queryStringParameters = dictionary["queryStringParameters"] as? [String: String] ?? [:]
             self.headers = dictionary["headers"] as? [String: String] ?? [:]
             if let b = dictionary["body"] as? String {
-                if isBase64Encoded {
-                    body = Data(base64Encoded: b)
-                }
-                else {
-                    body = b.data(using: .utf8)
-                }
+                body = isBase64Encoded ? Data(base64Encoded: b) : b.data(using: .utf8)
             }
             else {
-                self.body = nil
+                body = nil
             }
         }
         else {
@@ -89,8 +84,6 @@ struct LambdaHTTPRequest {
         c.queryItems = queryStringParameters.map { k, v in
             URLQueryItem(name: k, value: v)
         }
-
-        print(c)
         
         let method: HTTPMethod
         switch httpMethod.lowercased() {
@@ -179,10 +172,6 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
     public func handle(data: [String : Any], eventLoopGroup: EventLoopGroup) -> EventLoopFuture<[String : Any]> {
         do {
             if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data) {
-                print(httpRequest)
-                if let logger = try? container.make(Logger.self) {
-                    logger.info(httpRequest)
-                }
                 let request = Request(http: httpRequest.vaporRequest, using: container)
                 return try r.respond(to: request).map { $0.lambdaResponse.dictionary }
             }

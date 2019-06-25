@@ -1,4 +1,4 @@
-//brew install libressl
+//TIP: brew install libressl
 
 import Vapor
 import VaporLambdaAdapter
