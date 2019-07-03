@@ -35,9 +35,15 @@ public extension Application {
         if runAsLambda {
             var newConfig = config
             newConfig.prefer(LambdaHTTPServer.self, for: Server.self)
+            newConfig.prefer(LambdaLogger.self, for: Logger.self)
             
             var newServices = services
             newServices.register(LambdaHTTPServer.self)
+            
+            newServices.register(Logger.self) { _ in
+                return LambdaLogger()
+            }
+            
             try self.init(config: newConfig, environment: environment, services: newServices)
         }
         else {
