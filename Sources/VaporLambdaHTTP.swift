@@ -62,14 +62,22 @@ struct LambdaHTTPRequest {
     let queryStringParameters: [String: String]
     let headers: [String: String]
     
-    init?(dictionary: [String: Any]) {
+    init?(dictionary: [String: Any], lambdaHeaders: [String : Any]) {
         if  let hm = dictionary["httpMethod"] as? String,
             let path = dictionary["path"] as? String,
             let isBase64Encoded = dictionary["isBase64Encoded"] as? Bool {
             self.httpMethod = hm
             self.path = path.starts(with: "/") ? path : "/\(path)"
             self.queryStringParameters = dictionary["queryStringParameters"] as? [String: String] ?? [:]
-            self.headers = dictionary["headers"] as? [String: String] ?? [:]
+            var hs = dictionary["headers"] as? [String: String] ?? [:]
+            
+            for (k, v) in lambdaHeaders {
+                if let val = v as? String {
+                    hs[k] = val
+                }
+            }
+            self.headers = hs
+            
             if let b = dictionary["body"] as? String {
                 body = isBase64Encoded ? Data(base64Encoded: b) : b.data(using: .utf8)
             }
@@ -181,13 +189,17 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
         catch let error {
             return container.eventLoop.newFailedFuture(error: error)
         }
+        
     }
     
     
-    public func handle(data: [String : Any], headers: [String : Any], eventLoopGroup: EventLoopGroup) -> EventLoopFuture<[String : Any]> {
-        //the header parameters are not the request parameters, FYI, they are lambda context headers
+    public func handle(
+        data: [String : Any],
+        headers: [String : Any],
+        eventLoopGroup: EventLoopGroup
+    ) -> EventLoopFuture<[String : Any]> {
         do {
-            if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data) {
+            if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data, lambdaHeaders: headers) {
                 let request = Request(http: httpRequest.vaporRequest, using: container)
                 return try r.respond(to: request).map { $0.lambdaResponse.dictionary }
             }
