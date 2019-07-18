@@ -184,7 +184,8 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
     }
     
     
-    public func handle(data: [String : Any], eventLoopGroup: EventLoopGroup) -> EventLoopFuture<[String : Any]> {
+    public func handle(data: [String : Any], headers: [String : Any], eventLoopGroup: EventLoopGroup) -> EventLoopFuture<[String : Any]> {
+        //the header parameters are not the request parameters, FYI, they are lambda context headers
         do {
             if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data) {
                 let request = Request(http: httpRequest.vaporRequest, using: container)
