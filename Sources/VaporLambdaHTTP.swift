@@ -180,7 +180,10 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
     public func start(hostname: String?, port: Int?) -> EventLoopFuture<Void> {
         do {
             responder = try container.make(Responder.self)
-            let dispatcher = LambdaEventDispatcher(handler: self)
+            
+            let logLevelStr = ProcessInfo.processInfo.environment["LOG_LEVEL"] ?? "info"
+            let logLevel = BasicLambdaLoggerLevel(str: logLevelStr)
+            let dispatcher = LambdaEventDispatcher(handler: self, logLevel: logLevel)
             _ = dispatcher.start()
             
             //kinda a hack to prevent the service from closing, works fine for lambdas
