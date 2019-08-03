@@ -28,6 +28,8 @@ extension LogLevel {
         }
     }
     
+    static var all: [LogLevel] = [.verbose, .debug, .info, .warning, .error, .fatal]
+    
 }
 
 public class LambdaLogger: Logger, Service {
@@ -38,8 +40,11 @@ public class LambdaLogger: Logger, Service {
         if let l = level {
             self.levelThreshold = l
         }
-        else if let level = ProcessInfo.processInfo.environment["LOG_LEVEL"] {
-            self.levelThreshold = LogLevel(stringLiteral: level)
+        else if
+            let l = ProcessInfo.processInfo.environment["LOG_LEVEL"],
+            let level = LogLevel.all.first(where: { String(describing: $0) == l })
+        {
+            self.levelThreshold = level
         }
         else {
             self.levelThreshold = .info
