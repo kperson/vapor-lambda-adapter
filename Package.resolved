@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/vapor/multipart.git",
         "state": {
           "branch": null,
-          "revision": "b1992ef53fc9b38a0d9710be040cf19d9f63ad05",
-          "version": "3.1.0"
+          "revision": "f063180d0b84832accd33194e06ed3c41f8609ac",
+          "version": "3.1.1"
         }
       },
       {
@@ -78,7 +78,7 @@
         "repositoryURL": "https://github.com/kperson/swift-aws-lambda-adapter.git",
         "state": {
           "branch": "master",
-          "revision": "a324474b9e939d3ff2e6a4e1744d0fbd083bf3c9",
+          "revision": "c501d8e13575a8af07af293b1249960cbd453140",
           "version": null
         }
       },
