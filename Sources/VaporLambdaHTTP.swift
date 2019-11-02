@@ -65,9 +65,10 @@ struct LambdaHTTPRequest {
     init?(dictionary: [String: Any], lambdaHeaders: [String : Any]) {
         if  let hm = dictionary["httpMethod"] as? String,
             let pathParameters = dictionary["pathParameters"] as? [String : Any],
-            let path = pathParameters["proxy"] as? String,
             let isBase64Encoded = dictionary["isBase64Encoded"] as? Bool {
+            let path = pathParameters["proxy"] as? String ?? ""
             self.httpMethod = hm
+            
             self.path = path.starts(with: "/") ? path : "/\(path)"
             self.queryStringParameters = dictionary["queryStringParameters"] as? [String: String] ?? [:]
             var hs = dictionary["headers"] as? [String: String] ?? [:]
