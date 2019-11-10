@@ -219,7 +219,7 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
             
             //Add RAW header
             for (k, v) in headers {
-                extraHeaders["raw-header-\(k)"] = v
+                extraHeaders[k] = v
             }
             
             
