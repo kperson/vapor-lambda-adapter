@@ -207,7 +207,24 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
             let logger = LambdaLogger()
             logger.debug("data: \(data.debugDescription)")
             logger.debug("headers: \(headers.debugDescription)")
-            if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data, lambdaHeaders: headers) {
+            var extraHeaders:[String : Any] = [:]
+            
+            //Add authorizer keys
+            if  let requestContext = data["requestContext"] as? [String : Any],
+                let authorizer = requestContext["authorizer"] as? [String : Any] {
+                for (k, v) in authorizer {
+                    extraHeaders["authorizer-\(k)"] = v
+                }
+            }
+            
+            //Add RAW header
+            for (k, v) in headers {
+                extraHeaders["raw-header-\(k)"] = v
+            }
+            
+            
+            logger.debug("extra headers: \(extraHeaders.debugDescription)")
+            if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data, lambdaHeaders: extraHeaders) {
                 let request = Request(http: httpRequest.vaporRequest, using: container)
                 return try r.respond(to: request).map { $0.lambdaResponse.dictionary }
             }
