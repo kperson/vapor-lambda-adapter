@@ -119,6 +119,8 @@ struct LambdaHTTPRequest {
             method = HTTPMethod.OPTIONS
         case "head":
             method = HTTPMethod.HEAD
+        case "delete":
+            method = HTTPMethod.DELETE
         default:
             method = HTTPMethod.RAW(value: httpMethod)
         }
