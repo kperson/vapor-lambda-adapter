@@ -61,6 +61,7 @@ struct LambdaHTTPRequest {
     let body: Data?
     let queryStringParameters: [String: String]
     let headers: [String: String]
+    let logger = LambdaLogger()
     
     init?(dictionary: [String: Any], lambdaHeaders: [String : Any]) {
         if  let hm = dictionary["httpMethod"] as? String,
@@ -86,8 +87,10 @@ struct LambdaHTTPRequest {
             else {
                 body = nil
             }
+            logger.debug("http request created: \(dictionary.debugDescription)")
         }
         else {
+            logger.debug("error creating http request: \(dictionary.debugDescription)")
             return nil
         }
     }
