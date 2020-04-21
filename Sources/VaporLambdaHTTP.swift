@@ -210,8 +210,6 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
     ) -> EventLoopFuture<[String : Any]> {
         do {
             let logger = LambdaLogger()
-            logger.debug("data: \(data.debugDescription)")
-            logger.debug("headers: \(headers.debugDescription)")
             var extraHeaders:[String : Any] = [:]
             
             //Add authorizer keys
@@ -226,12 +224,15 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
             for (k, v) in headers {
                 extraHeaders[k] = v
             }
-            
-            
-            logger.debug("extra headers: \(extraHeaders.debugDescription)")
+                        
             if let r = responder, let httpRequest = LambdaHTTPRequest(dictionary: data, lambdaHeaders: extraHeaders) {
                 let request = Request(http: httpRequest.vaporRequest, using: container)
-                return try r.respond(to: request).map { $0.lambdaResponse.dictionary }
+                return try r.respond(to: request).map { response in
+                    if response.lambdaResponse.statusCode >= 400 {
+                        logger.warning("handled error (http): request = \(data.debugDescription), response = \(response.debugDescription)")
+                    }
+                    return response.lambdaResponse.dictionary
+                }
             }
             else {
                 return container.eventLoop.newSucceededFuture(result:
@@ -245,12 +246,7 @@ public final class LambdaHTTPServer: Server, ServiceType, LambdaEventHandler {
         }
         catch let error {
             if let logger = try? container.make(Logger.self) {
-                var s = ""
-                print(error, to: &s)
-                logger.error(s)
-            }
-            else {
-                print(error)
+                logger.warning("handled error (http): request = \(data.debugDescription), error = \(error)")
             }
             return container.eventLoop.newSucceededFuture(result:
                 LambdaHTTPResponse(
