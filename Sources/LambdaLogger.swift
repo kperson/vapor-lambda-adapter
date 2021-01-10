@@ -32,9 +32,31 @@ extension LogLevel {
     
 }
 
+public struct LambdaLogMessage {
+    
+    let message: String
+    let file: String
+    let function: String
+    let line: UInt
+    let column: UInt
+    let level: LogLevel
+    let date: Date
+    let passesThreshold: Bool
+}
+
+public protocol LambdaLoggerAppender {
+    
+    func append(message: LambdaLogMessage)
+    
+}
+
 public class LambdaLogger: Logger, Service {
     
     private let levelThreshold: LogLevel
+    
+    public static var appenders: [LambdaLoggerAppender] = []
+    public static var shouldPrint: Bool = true
+    let printLogger = PrintLogger()
     
     public init(level: LogLevel? = nil) {
         if let l = level {
@@ -51,12 +73,28 @@ public class LambdaLogger: Logger, Service {
         }
     }
     
-    let printLogger = PrintLogger()
     
     public func log(_ string: String, at level: LogLevel, file: String, function: String, line: UInt, column: UInt) {
-        if level.rank >= levelThreshold.rank {
-            printLogger.log(string, at: level, file: file, function: function, line: line, column: column)
-            fflush(stdout)
+        let passesThreshold = level.rank >= levelThreshold.rank
+        if passesThreshold {
+            if LambdaLogger.shouldPrint {
+                printLogger.log(string, at: level, file: file, function: function, line: line, column: column)
+                fflush(stdout)
+            }
+        }
+        
+        let message = LambdaLogMessage(
+            message: string,
+            file: file,
+            function: function,
+            line: line,
+            column: column,
+            level: level,
+            date: Date(),
+            passesThreshold: passesThreshold
+        )
+        for a in LambdaLogger.appenders {
+            a.append(message: message)
         }
     }
     
