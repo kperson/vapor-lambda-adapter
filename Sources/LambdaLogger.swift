@@ -34,14 +34,14 @@ extension LogLevel {
 
 public struct LambdaLogMessage {
     
-    let message: String
-    let file: String
-    let function: String
-    let line: UInt
-    let column: UInt
-    let level: LogLevel
-    let date: Date
-    let passesThreshold: Bool
+    public let message: String
+    public let file: String
+    public let function: String
+    public let line: UInt
+    public let column: UInt
+    public let level: LogLevel
+    public let date: Date
+    public let passesThreshold: Bool
 }
 
 public protocol LambdaLoggerAppender {
