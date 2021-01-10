@@ -77,9 +77,9 @@
         "package": "aws-lambda-adapater",
         "repositoryURL": "https://github.com/kperson/swift-aws-lambda-adapter.git",
         "state": {
-          "branch": "master",
+          "branch": null,
           "revision": "d735253ee61ae48a096a1540b7c0897aca9038ad",
-          "version": null
+          "version": "1.0.0"
         }
       },
       {

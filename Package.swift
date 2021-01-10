@@ -7,7 +7,7 @@ let package = Package(
         .library(name: "VaporLambdaAdapter", targets: ["VaporLambdaAdapter"])
     ],
     dependencies: [
-        .package(url: "https://github.com/kperson/swift-aws-lambda-adapter.git", .branch("master")),
+        .package(url: "https://github.com/kperson/swift-aws-lambda-adapter.git", .upToNextMinor(from: "1.0.0")),
         .package(url: "https://github.com/vapor/vapor.git", .upToNextMinor(from: "3.3.0"))
     ],
     targets: [
